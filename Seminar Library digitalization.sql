@@ -1,3 +1,6 @@
+CREATE SCHEMA lib;
+USE lib;
+
 CREATE TABLE `book_info` (
   `info_id` integer PRIMARY KEY AUTO_INCREMENT,
   `title` varchar(200) NOT NULL,
@@ -19,7 +22,7 @@ CREATE TABLE `book_category` (
 );
 
 CREATE TABLE `user` (
-  `user_id` integer PRIMARY KEY,
+  `user_id` integer PRIMARY KEY AUTO_INCREMENT,
   `institution_id_number` integer UNIQUE NOT NULL,
   `first_name` varchar(200) NOT NULL,
   `last_name` varchar(200),

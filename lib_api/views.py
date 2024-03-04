@@ -13,3 +13,11 @@ def login(request: HttpRequest):
         return HttpResponse("cookieafsdfasdf")
     elif(request.method == 'GET'):
         return HttpResponse("Aquired cookies")
+
+@csrf_exempt
+def signup(request: HttpRequest):
+    if(request.method == "POST"):
+        print(json.loads(request.body))
+        return HttpResponse("Successfully received the given data")
+    else:
+        return HttpResponse("This is not a post request")
