@@ -1,8 +1,17 @@
-# from . import database
-from database import *
+from .database import *
+# from database import *
 
-def createUser(iid:int,fname:str,lname:str,email:str,phone:str,password:str,maintainer=0) -> bool:
+def createUser(parsed: dict) -> bool:
+
     try:
+        iid=parsed['iid']
+        fname=parsed['fname']
+        lname=parsed['lname']
+        email=parsed['email']
+        phone=parsed['phone']
+        password=parsed['password']
+        maintainer=parsed['maintainer']
+
         cursor = DB.get_connection().cursor()
         cursor.execute('''
                         INSERT INTO user(institution_id_number,first_name,last_name,hashed_pass,email,phone,is_maintainer)
