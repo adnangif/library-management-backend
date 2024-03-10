@@ -2,7 +2,7 @@ from .database import *
 # from database import *
 
 def createUser(parsed: dict) -> bool:
-
+    cursor = DB.get_connection().cursor()
     try:
         iid=parsed['iid']
         fname=parsed['fname']
@@ -12,7 +12,6 @@ def createUser(parsed: dict) -> bool:
         password=parsed['password']
         maintainer=parsed['maintainer']
 
-        cursor = DB.get_connection().cursor()
         cursor.execute('''
                         INSERT INTO user(institution_id_number,first_name,last_name,hashed_pass,email,phone,is_maintainer)
                         values(%s,%s,%s,%s,%s,%s,%s)
@@ -25,8 +24,39 @@ def createUser(parsed: dict) -> bool:
         cursor.close()
         return False
 
+def find_by_iid_and_password(parsed: dict):
+    cursor = DB.get_connection().cursor()
+    try:
+        iid=parsed['iid']
+        password=parsed['password']
+        cursor.execute( '''
+        SELECT *
+        FROM user
+        WHERE institution_id_number=%s 
+        AND hashed_pass=%s 
+                        ''',[iid,password])
+        
+        rows = cursor.fetchall()
+        cursor.close()
+
+        if(len(rows) == 0):
+            return None
+        else:
+            return rows[0]
+
+    except Exception as e:
+        print(e)
+        cursor.close()
+        return None
+
 
 if __name__ == "__main__":
-    print(signup(
-        234234,'asdfasd','asdf43','q4rcsdcfsfd','234234','era3q4dsafsd'
-    ))
+    print(
+        find_by_iid_and_password({
+            'iid':210210,
+            'password':'sdfasdfasd'
+        })
+    )
+    # print(createUser(
+    #     234234,'asdfasd','asdf43','q4rcsdcfsfd','234234','era3q4dsafsd'
+    # ))
