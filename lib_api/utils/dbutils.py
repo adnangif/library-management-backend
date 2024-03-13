@@ -25,12 +25,12 @@ def createUser(parsed: dict) -> bool:
         return False
 
 def find_by_iid_and_password(parsed: dict):
-    cursor = DB.get_connection().cursor()
+    cursor = DB.get_connection().cursor(dictionary=True)
     try:
         iid=parsed['iid']
         password=parsed['password']
         cursor.execute( '''
-        SELECT *
+        SELECT user_id, institution_id_number, first_name, last_name, email 
         FROM user
         WHERE institution_id_number=%s 
         AND hashed_pass=%s 
