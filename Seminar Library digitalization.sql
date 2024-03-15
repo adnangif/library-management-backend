@@ -26,18 +26,27 @@ CREATE TABLE `user` (
   `institution_id_number` integer UNIQUE NOT NULL,
   `first_name` varchar(200) NOT NULL,
   `last_name` varchar(200),
-  `hashed_pass` varchar(300) NOT NULL,
+  `hashed_pass` varchar(400) NOT NULL,
   `email` varchar(300) UNIQUE NOT NULL,
-  `phone` varchar(100) NOT NULL,
-  `is_maintainer` smallint NOT NULL DEFAULT 0
+  `phone` varchar(50) NOT NULL
+);
+
+CREATE TABLE `librarian` (
+  `librarian_id` integer PRIMARY KEY AUTO_INCREMENT,
+  `institution_id_number` integer UNIQUE NOT NULL,
+  `first_name` varchar(200) NOT NULL,
+  `last_name` varchar(200),
+  `hashed_pass` varchar(400) NOT NULL,
+  `email` varchar(300) UNIQUE NOT NULL,
+  `phone` varchar(100) NOT NULL
 );
 
 CREATE TABLE `order` (
   `order_id` integer PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `user_id` integer NOT NULL,
   `issue_datetime` datetime DEFAULT current_timestamp(),
-  `due_datetime` datetime NOT NULL,
-  `last_collection_time` datetime NOT NULL
+  `due_datetime` integer NOT NULL,
+  `last_collection_time` integer NOT NULL
 );
 
 CREATE TABLE `ordered_book` (
@@ -65,8 +74,8 @@ CREATE TABLE `return_record` (
 );
 
 CREATE TABLE `returned_book` (
-  `return_id` integer NOT NULL,
-  `book_id` integer NOT NULL
+  `book_id` integer NOT NULL,
+  `return_id` integer NOT NULL
 );
 
 ALTER TABLE `book_copy` ADD FOREIGN KEY (`info_id`) REFERENCES `book_info` (`info_id`);
@@ -81,7 +90,7 @@ ALTER TABLE `ordered_book` ADD FOREIGN KEY (`book_id`) REFERENCES `book_copy` (`
 
 ALTER TABLE `borrow_record` ADD FOREIGN KEY (`order_id`) REFERENCES `order` (`order_id`);
 
-ALTER TABLE `borrow_record` ADD FOREIGN KEY (`delivered_by`) REFERENCES `user` (`user_id`);
+ALTER TABLE `borrow_record` ADD FOREIGN KEY (`delivered_by`) REFERENCES `librarian` (`librarian_id`);
 
 ALTER TABLE `borrowed_book` ADD FOREIGN KEY (`book_id`) REFERENCES `book_copy` (`book_id`);
 
@@ -89,8 +98,8 @@ ALTER TABLE `borrowed_book` ADD FOREIGN KEY (`borrow_id`) REFERENCES `borrow_rec
 
 ALTER TABLE `return_record` ADD FOREIGN KEY (`order_id`) REFERENCES `order` (`order_id`);
 
-ALTER TABLE `return_record` ADD FOREIGN KEY (`return_to`) REFERENCES `user` (`user_id`);
-
-ALTER TABLE `returned_book` ADD FOREIGN KEY (`return_id`) REFERENCES `return_record` (`return_id`);
+ALTER TABLE `return_record` ADD FOREIGN KEY (`return_to`) REFERENCES `librarian` (`librarian_id`);
 
 ALTER TABLE `returned_book` ADD FOREIGN KEY (`book_id`) REFERENCES `book_copy` (`book_id`);
+
+ALTER TABLE `returned_book` ADD FOREIGN KEY (`return_id`) REFERENCES `return_record` (`return_id`);
