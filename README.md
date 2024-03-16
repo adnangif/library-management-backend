@@ -6,7 +6,7 @@
 <br>
 **Git Bash**
 
-When running the project for the first time in Windows,
+When running the project for the first time in Windows using powershell,
 
 
     git clone https://github.com/adnangif/library-management-backend.git
