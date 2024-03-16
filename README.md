@@ -32,6 +32,7 @@ Install project dependencies:
     pip install -r requirements.txt
     
     
+**Edit 'mysql_credentials.py' to add mysql username,password,database**
 
 You can now run the development server:
 

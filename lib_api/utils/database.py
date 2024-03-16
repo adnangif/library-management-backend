@@ -2,6 +2,8 @@ import mysql.connector as mysql
 from mysql.connector.abstracts import MySQLConnectionAbstract
 from mysql.connector.pooling import PooledMySQLConnection
 
+from mysql_credentials import Credentials
+
 
 class DB:
     _connection:MySQLConnectionAbstract|PooledMySQLConnection|None = None; 
@@ -10,11 +12,11 @@ class DB:
     def get_connection():
         if DB._connection is None:
             DB._connection = mysql.connect(
-                host='localhost',
-                port='3306',
-                user='root',
-                passwd='password',
-                database='lib',
+                host=Credentials.host,
+                port=Credentials.port,
+                user=Credentials.user,
+                passwd=Credentials.passwd,
+                database=Credentials.database,
             )
         return DB._connection
     
