@@ -13,7 +13,7 @@ from .utils import createUser,find_by_iid_and_password
 @api_view(['POST'])
 def login (request: HttpRequest):
     parsed = json.loads(request.body)
-    print(parsed)
+    # print(parsed)
     result = find_by_iid_and_password(parsed)
     
 
