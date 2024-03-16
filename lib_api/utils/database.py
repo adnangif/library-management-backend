@@ -1,8 +1,10 @@
 import mysql.connector as mysql
+from mysql.connector.abstracts import MySQLConnectionAbstract
+from mysql.connector.pooling import PooledMySQLConnection
 
 
 class DB:
-    _connection:mysql.MySQLConnection = None;
+    _connection:MySQLConnectionAbstract|PooledMySQLConnection|None = None; 
 
     @staticmethod
     def get_connection():
