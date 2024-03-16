@@ -10,12 +10,11 @@ def createUser(parsed: dict) -> bool:
         email=parsed['email']
         phone=parsed['phone']
         password=parsed['password']
-        maintainer=parsed['maintainer']
 
         cursor.execute('''
-                        INSERT INTO user(institution_id_number,first_name,last_name,hashed_pass,email,phone,is_maintainer)
-                        values(%s,%s,%s,%s,%s,%s,%s)
-                        ''',[iid,fname,lname,password,email,phone,maintainer])
+                        INSERT INTO user(institution_id_number,first_name,last_name,hashed_pass,email,phone)
+                        values(%s,%s,%s,%s,%s,%s)
+                        ''',[iid,fname,lname,password,email,phone])
         DB.get_connection().commit()
         cursor.close()
         return True
