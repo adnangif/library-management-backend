@@ -3,6 +3,10 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+
+
+./mysql_credentials.py
+
 # C extensions
 *.so
 
