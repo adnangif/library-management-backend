@@ -21,24 +21,24 @@ VALUES (13, 'Computer Networking: A Top-Down Approach', 'James F. Kurose, Keith 
 INSERT INTO book_info (info_id, title, author, description, publication_year, edition)
 VALUES (14, 'Design Patterns: Elements of Reusable Object-Oriented Software', 'Erich Gamma, Richard Helm, Ralph Johnson, John Vlissides', 'Introduces design patterns in software engineering', 1994, 'First edition');
 
--- Inserting 15 rows into book_copy table with alternating is_available values
+-- Inserting 15 rows into book_copy table 
 INSERT INTO book_copy (info_id, book_id, is_available)
 VALUES 
     (10, 1, 1),
     (11, 2, 1),
     (12, 3, 1),
     (13, 4, 1),
-    (14, 5, 0),
+    (14, 5, 1),
     (13, 6, 1),
-    (10, 7, 01),
+    (10, 7, 1),
     (11, 8, 1),
-    (12, 9, 01),
+    (12, 9, 1),
     (13, 10, 1),
-    (14, 11, 0),
+    (14, 11, 1),
     (14, 12, 1),
-    (10, 13, 0),
+    (10, 13, 1),
     (11, 14, 1),
-    (12, 15, 0);
+    (12, 15, 1);
 
 -- Inserting categories for book 1
 INSERT INTO book_category (info_id, category)
