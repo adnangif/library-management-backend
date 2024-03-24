@@ -1,7 +1,5 @@
 use lib;
-SELECT * FROM book_info;
-SELECT * FROM book_copy order by info_id;
-SELECT * FROM book_category;
+
 
 -- Inserting book 1
 INSERT INTO book_info (info_id, title, author, description, publication_year, edition)
