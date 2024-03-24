@@ -5,7 +5,7 @@ __pycache__/
 
 
 
-./mysql_credentials.py
+mysql_credentials.py
 
 # C extensions
 *.so
