@@ -60,3 +60,35 @@ VALUES (13, 'Computer Science');
 INSERT INTO book_category (info_id, category)
 VALUES (14, 'Computer Science');
 
+
+--user
+INSERT INTO `user`(`user_id`,`institution_id_number`,`first_name`,`last_name`,`hashed_pass`,`email`,`phone`) 
+VALUES
+(1,2101,'rahad','tithi','123','2101@gmail.com','01234567809'),
+(2,2102,'partho','susmi','123','2102@gmail.com','01244469789'),
+(3,2103,'rabby','fahim','123','2103@gmail.com','01236354789'),
+(4,2104,'banhi','tithi','123','2104@gmail.com','01232384789'),
+(5,2105,'arnob','aaru','123','2105@gmail.com','01238576789'),
+(6,2106,'antu','ghum','123','2106@gmail.com','01227876789');
+
+--order
+INSERT INTO `order`(`order_id`,`user_id`,`issue_datetime`,`due_datetime`,`last_collection_time`) 
+VALUES
+(1,1,'2023-01-25 00:00:00',190,3),
+(2,1,'2023-01-25 00:00:00',190,3),
+(3,3,'2023-02-5 00:00:00',190,3),
+(4,6,'2023-03-15 00:00:00',190,3),
+(5,4,'2023-01-5 00:00:00',190,3),
+(6,2,'2023-01-2 00:00:00',190,3),
+(7,5,'2023-01-21 00:00:00',190,3);
+
+--borrowed_book
+INSERT INTO `ordered_book`(`order_id`,`book_id`)
+VALUES
+(1,2),
+(2,6),
+(3,7),
+(4,1),
+(5,5),
+(6,9),
+(7,3);
