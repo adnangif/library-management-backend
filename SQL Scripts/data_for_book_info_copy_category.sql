@@ -61,7 +61,7 @@ INSERT INTO book_category (info_id, category)
 VALUES (14, 'Computer Science');
 
 
---user
+-- user
 INSERT INTO `user`(`user_id`,`institution_id_number`,`first_name`,`last_name`,`hashed_pass`,`email`,`phone`) 
 VALUES
 (1,2101,'rahad','tithi','123','2101@gmail.com','01234567809'),
@@ -71,7 +71,7 @@ VALUES
 (5,2105,'arnob','aaru','123','2105@gmail.com','01238576789'),
 (6,2106,'antu','ghum','123','2106@gmail.com','01227876789');
 
---order
+-- order
 INSERT INTO `order`(`order_id`,`user_id`,`issue_datetime`,`due_datetime`,`last_collection_time`) 
 VALUES
 (1,1,'2023-01-25 00:00:00',190,3),
@@ -82,7 +82,7 @@ VALUES
 (6,2,'2023-01-2 00:00:00',190,3),
 (7,5,'2023-01-21 00:00:00',190,3);
 
---borrowed_book
+-- borrowed_book
 INSERT INTO `ordered_book`(`order_id`,`book_id`)
 VALUES
 (1,2),
