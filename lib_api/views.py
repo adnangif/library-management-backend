@@ -1,3 +1,4 @@
+from urllib import response
 from django.http import HttpRequest
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -6,9 +7,13 @@ from rest_framework import status
 import json
 import jwt
 
-jwt_secret = "aerpoic43sfd#$sfd%W$dsfSDfg#sdfg2#%$23dfs32ads12sdau7698gf*&hfd"
 
-from .utils import createUser,find_by_iid_and_password
+from .utils import *
+
+
+
+
+
 
 @api_view(['POST'])
 def login (request: HttpRequest):
@@ -19,7 +24,7 @@ def login (request: HttpRequest):
 
 
     if(result is not None and type(result) is dict):
-        encoded_jwt = jwt.encode(result,jwt_secret)
+        encoded_jwt = jwt.encode(result,JWT_SECRET)
 
         return Response(status=status.HTTP_202_ACCEPTED,data={
             'info': json.dumps(result),
@@ -29,6 +34,27 @@ def login (request: HttpRequest):
         return Response(status=status.HTTP_400_BAD_REQUEST,data={'error':"BAD REQUEST"})
 
     
+@api_view(["GET"])
+def user_info(request:HttpRequest):
+    try:
+        token:str = request.META["HTTP_AUTHORIZATION"]
+        token = token.split(' ')[1]
+        print(token)
+        decoded = jwt.decode(jwt=token,key=JWT_SECRET,algorithms=["HS256"])
+        print(decoded)
+        return Response(status=status.HTTP_200_OK,data=decoded)
+
+        
+    except Exception as e:
+        print(e)
+        return Response(status=status.HTTP_401_UNAUTHORIZED,data={"error":"token invalid"})
+
+
+@api_view(['GET'])
+def book_search(request:HttpRequest):
+    pass
+
+
 
 
 @api_view(['POST'])

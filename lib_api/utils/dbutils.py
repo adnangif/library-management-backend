@@ -7,6 +7,14 @@ import secrets
 
 hasher = PBKDF2PasswordHasher()
 
+
+
+
+
+def find_user_using_token(parsed: dict):
+    print(parsed)
+    pass
+
 def createUser(parsed: dict) -> bool:
     cursor = DB.get_connection().cursor()
     try:
