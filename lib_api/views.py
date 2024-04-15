@@ -14,6 +14,13 @@ from .utils import *
 
 
 @api_view(['POST'])
+def debug(request: HttpRequest):
+    print(request.POST)
+    print(request.POST.get('question-1'))
+
+    return HttpResponse(request.POST)
+
+@api_view(['POST'])
 def signup(request: HttpRequest):
     parsed = json.loads(request.body)
     print(parsed)
