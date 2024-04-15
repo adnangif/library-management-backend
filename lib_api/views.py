@@ -1,4 +1,5 @@
 from urllib import response
+from wsgiref.util import request_uri
 from django.http import HttpRequest
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -58,31 +59,172 @@ def user_info(request:HttpRequest):
         return Response(status=status.HTTP_401_UNAUTHORIZED,data={"error":"token invalid"})
 
 
-
-
-
 @api_view(['GET'])
 def book_search(request:HttpRequest):
-    pass
+    try:
+        decoded = decodeJWT(request=request)
+        
+        q = request.GET.get('q')
+        books = find_book_by_str(q)
+        print(books)
+        return Response(status=status.HTTP_200_OK,data=books)
+        
+    except Exception as e:
+        print(e)
+        return Response(status=status.HTTP_401_UNAUTHORIZED,data={"error":"token invalid"})
+
 
 @api_view(['GET'])
 def category_list(request:HttpRequest):
-    pass
+    try:
+        decoded = decodeJWT(request=request)
+        
+        categories = get_category_list()
+        print(categories)
+        return Response(status=status.HTTP_200_OK,data=categories)
+        
+    except Exception as e:
+        print(e)
+        return Response(status=status.HTTP_401_UNAUTHORIZED,data={"error":"token invalid"})
+
 
 @api_view(['GET'])
 def category_books(request:HttpRequest):
-    pass
+    try:
+        decoded = decodeJWT(request=request)
+        
+        category = request.GET.get('title')
+        
+        category_books = get_category_books(category)
+        print(category_books)
+        return Response(status=status.HTTP_200_OK,data=category_books)
+        
+    except Exception as e:
+        print(e)
+        return Response(status=status.HTTP_401_UNAUTHORIZED,data={"error":"token invalid"})
+
+
+@api_view(['GET'])
+def available_count(request:HttpRequest):
+    try:
+        decoded = decodeJWT(request=request)
+        
+        info_id = request.GET.get('id')
+        
+        available_books = get_available_books_using_info_id(info_id)
+        print(available_books)
+        return Response(status=status.HTTP_200_OK,data=available_books)
+        
+    except Exception as e:
+        print(e)
+        return Response(status=status.HTTP_401_UNAUTHORIZED,data={"error":"token invalid"})
+
+
+@api_view(['POST'])
+def create_order(request:HttpRequest):
+    try:
+        decoded = decodeJWT(request=request)
+        order = create_order_using_user_id(decoded["user_id"])
+        
+        print(order)
+        return Response(status=status.HTTP_200_OK,data=order)
+        
+    except Exception as e:
+        print(e)
+        return Response(status=status.HTTP_401_UNAUTHORIZED,data={"error":"token invalid"})
+
+
+@api_view(['POST'])
+def add_to_order(request:HttpRequest):
+    try:
+        decoded = decodeJWT(request=request)
+        parsed = json.loads(request.body)
+        
+        result = add_book_to_order(parsed)
+        
+        print(result)
+        return Response(status=status.HTTP_200_OK,data=result)
+        
+    except Exception as e:
+        print(e)
+        return Response(status=status.HTTP_401_UNAUTHORIZED,data={"error":"token invalid"})
+
+
+@api_view(['POST'])
+def cancel_order(request:HttpRequest):
+    try:
+        decoded = decodeJWT(request=request)
+        parsed = json.loads(request.body)
+        
+        result = delete_order(parsed)
+        
+        print(result)
+        return Response(status=status.HTTP_200_OK,data=result)
+        
+    except Exception as e:
+        print(e)
+        return Response(status=status.HTTP_401_UNAUTHORIZED,data={"error":"token invalid"})
+
 
 @api_view(['GET'])
 def order_list(request:HttpRequest):
-    pass
+    try:
+        decoded = decodeJWT(request=request)
+        
+        result = get_orders(decoded['user_id'])
+        
+        print(result)
+        return Response(status=status.HTTP_200_OK,data=result)
+        
+    except Exception as e:
+        print(e)
+        return Response(status=status.HTTP_401_UNAUTHORIZED,data={"error":"token invalid"})
+
 
 @api_view(["GET"])
-def order_detaiils(request:HttpRequest):
-    pass
+def order_details(request:HttpRequest):
+    try:
+        decoded = decodeJWT(request=request)
+        
+        order_id = request.GET['id']
+        user_id = decoded['user_id']
+        
+        result = get_order_details(order_id,user_id)
+        
+        print(result)
+        return Response(status=status.HTTP_200_OK,data=result)
+        
+    except Exception as e:
+        print(e)
+        return Response(status=status.HTTP_401_UNAUTHORIZED,data={"error":"token invalid"})
 
 @api_view(['GET'])
 def book_details(request:HttpRequest):
+    try:
+        decoded = decodeJWT(request=request)
+        
+        book_id = request.GET['id']
+        
+        result = get_book_details(book_id)
+        
+        print(result)
+        return Response(status=status.HTTP_200_OK,data=result)
+        
+    except Exception as e:
+        print(e)
+        return Response(status=status.HTTP_401_UNAUTHORIZED,data={"error":"token invalid"})
+
+
+@api_view(["GET"])
+def order_related_books(request:HttpRequest):
     pass
 
+
+@api_view(['POST'])
+def librarian_login(request:HttpRequest):
+    pass
+
+@api_view(['GET'])
+def waiting_list(request:HttpRequest):
+    pass
 
