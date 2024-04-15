@@ -315,6 +315,27 @@ def get_book_details(book_id:str):
         return None
 
 
+def get_related_books(order_id:str):
+    
+    cursor = DB.get_connection().cursor(dictionary=True)
+    try:
+        
+        cursor.execute('''
+            SELECT *
+            FROM (`ordered_book` NATURAL JOIN `book_copy`) NATURAL JOIN `book_info`
+            WHERE `order_id` = %s
+
+        ''',[order_id])       
+
+        books = cursor.fetchall()
+        
+        return books
+
+    except Exception as e:
+        print(e)
+        cursor.close()
+        return None
+
 def find_by_iid_and_password(parsed: dict):
     cursor = DB.get_connection().cursor(dictionary=True)
     try:

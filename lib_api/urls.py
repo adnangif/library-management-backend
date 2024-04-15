@@ -19,5 +19,5 @@ urlpatterns = [
     path('book-details/',views.book_details),
     
     
-    path('order-related-books',views.order_related_books),
+    path('ordered-books/',views.order_related_books),
 ]

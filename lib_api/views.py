@@ -217,7 +217,21 @@ def book_details(request:HttpRequest):
 
 @api_view(["GET"])
 def order_related_books(request:HttpRequest):
-    pass
+    try:
+        decoded = decodeJWT(request=request)
+        
+        order_id = request.GET['id']
+        
+        result = get_related_books(order_id)
+        
+        print(result)
+        return Response(status=status.HTTP_200_OK,data=result)
+        
+    except Exception as e:
+        print(e)
+        return Response(status=status.HTTP_401_UNAUTHORIZED,data={"error":"token invalid"})
+
+
 
 
 @api_view(['POST'])
