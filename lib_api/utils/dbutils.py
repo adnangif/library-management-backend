@@ -97,9 +97,13 @@ def get_category_books(q:str|None = None):
     try:
         args = [q]
         cursor.execute( '''
-        SELECT * 
-        FROM book_category NATURAL JOIN book_info
-        WHERE LOWER(book_category.category) = LOWER(%s)
+        SELECT `info_id` ,`category`,`title`,`author`,`description`,`publication_year`,`edition`,COUNT(`book_id`) AS `available_books` 
+        FROM (book_category NATURAL JOIN book_info) NATURAL JOIN `book_copy`
+        WHERE 
+            LOWER(book_category.category) = LOWER(%s) AND
+            `book_copy`.`is_available` = 1
+        GROUP BY `info_id` ,`category`,`title`,`author`,`description`,`publication_year`,`edition`
+
                         ''', args)
         
         result:Dict|Any = cursor.fetchall()
