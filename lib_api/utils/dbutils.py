@@ -143,9 +143,10 @@ def get_available_books_using_info_id(q:str|None = None):
         return None
     
 
-def create_order_using_user_id(user_id):
+def create_order_using_user_id(user_id, parsed):
     cursor = DB.get_connection().cursor(dictionary=True)
     try:
+        book_ids:list[str] = parsed["book_ids"]
         DUE_TIME = 180
         LAST_COLLECTION_TIME = 5
         cursor.execute('''
@@ -158,16 +159,36 @@ def create_order_using_user_id(user_id):
         
         order_id:dict|Any = cursor.fetchone()
         
-        order_id = order_id.get('LAST_INSERT_ID()')
+        order_id = str(order_id.get('LAST_INSERT_ID()'))
         
+        for book_id in book_ids:
+            cursor.execute('''  
+                INSERT INTO `ordered_book` (`order_id`, `book_id`) 
+                SELECT %s AS `order_id`, `book_id` 
+                FROM `book_copy`
+                WHERE 
+                    `is_available` = 1 AND
+                    `book_id` = %s
+                ''',[order_id,book_id])
+            
+            cursor.execute('''
+                UPDATE `book_copy`
+                SET `is_available` = 0
+                WHERE `book_id` = %s
+            ''',[book_id])
+        
+        DB.get_connection().commit()
         return {
-            "order_id":order_id
+            "message":"successful",
+            "order_id":order_id,
         }
 
     except Exception as e:
         print(e)
         cursor.close()
-        return None
+        return {
+            "message":"failure"
+        }
     
     
 def add_book_to_order(parsed):

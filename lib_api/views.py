@@ -124,7 +124,8 @@ def available_count(request:HttpRequest):
 def create_order(request:HttpRequest):
     try:
         decoded = decodeJWT(request=request)
-        order = create_order_using_user_id(decoded["user_id"])
+        parsed = json.loads(request.body)
+        order = create_order_using_user_id(decoded["user_id"],parsed)
         
         print(order)
         return Response(status=status.HTTP_200_OK,data=order)
