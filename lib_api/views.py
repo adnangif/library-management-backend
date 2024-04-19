@@ -203,9 +203,9 @@ def book_details(request:HttpRequest):
     try:
         decoded = decodeJWT(request=request)
         
-        book_id = request.GET['id']
+        info_id = request.GET['id']
         
-        result = get_book_details(book_id)
+        result = get_book_details(info_id)
         
         print(result)
         return Response(status=status.HTTP_200_OK,data=result)

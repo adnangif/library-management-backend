@@ -129,9 +129,10 @@ def get_available_books_using_info_id(q:str|None = None):
         where 
             book_info.info_id = %s AND
             book_copy.is_available = 1
+        LIMIT 1
                         ''', args)
         
-        result:Dict|Any = cursor.fetchall()
+        result:Dict|Any = cursor.fetchone()
         cursor.close()
         
         return result
@@ -284,7 +285,7 @@ def get_order_details(order_id:str, user_id:str):
         WHERE 
             `order_id` = %s AND
             `user_id` = %s
-
+        LIMIT 1
         ''',[order_id, user_id])       
 
         orders = cursor.fetchone()
@@ -296,18 +297,18 @@ def get_order_details(order_id:str, user_id:str):
         cursor.close()
         return None
 
-def get_book_details(book_id:str):
+def get_book_details(info_id:str):
     
     cursor = DB.get_connection().cursor(dictionary=True)
     try:
         
         cursor.execute('''
-        SELECT * 
+        SELECT *
         FROM `book_info` NATURAL JOIN `book_copy`
-        WHERE 
-            `book_id` = %s
-
-        ''',[book_id])       
+        WHERE `info_id` = %s
+        ORDER BY `is_available` DESC
+        LIMIT 1
+        ''',[info_id])       
 
         orders = cursor.fetchone()
         
