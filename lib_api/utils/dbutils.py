@@ -162,6 +162,19 @@ def create_order_using_user_id(user_id, parsed):
         order_id = str(order_id.get('LAST_INSERT_ID()'))
         
         for book_id in book_ids:
+            cursor.execute('''
+            SELECT * 
+            FROM `book_copy` 
+            WHERE   `book_id` = %s AND
+                    `is_available` = 1
+            ''',[book_id])
+            
+            if(len(cursor.fetchall()) == 0):
+                cursor.execute('''DELETE FROM `order` WHERE `order_id` = %s''',[order_id])
+                DB.get_connection().commit()
+                
+                raise Exception("Not enough available books")
+            
             cursor.execute('''  
                 INSERT INTO `ordered_book` (`order_id`, `book_id`) 
                 SELECT %s AS `order_id`, `book_id` 
@@ -183,11 +196,11 @@ def create_order_using_user_id(user_id, parsed):
             "order_id":order_id,
         }
 
-    except Exception as e:
+    except Exception as e:        
         print(e)
         cursor.close()
         return {
-            "message":"failure"
+            "message": str(e)
         }
     
     
