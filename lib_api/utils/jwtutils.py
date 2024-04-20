@@ -1,4 +1,3 @@
-from curses import keyname
 from django.http import HttpRequest, HttpResponse
 from jwt import encode, decode
 JWT_SECRET = "aerpoic43sfd#$sfd%W$dsfSDfg#sdfg2#%$23dfs32ads12sdau7698gf*&hfd"
