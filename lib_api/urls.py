@@ -21,5 +21,7 @@ urlpatterns = [
 
     path('librarian/login/',views.librarian_login),
     path('librarian/signup/',views.librarian_signup),
+    path('librarian/get-all-ordered-books/',views.librarian_get_all_ordered_books),
+    path('librarian/deliver-book/',views.librarian_deliver_book),
 
 ]

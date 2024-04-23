@@ -417,6 +417,7 @@ def get_all_ordered_books():
         cursor.close()
         return None
 
+
 def validate_librarian_iid_password(parsed: dict):
     cursor = DB.get_connection().cursor(dictionary=True)
     try:
@@ -472,3 +473,54 @@ def create_librarian(parsed: dict) -> bool:
         print(e)
         cursor.close()
         return False
+
+
+def librarian_deliver_book_handle_db(parsed, librarian_id):
+    cursor = DB.get_connection().cursor(dictionary=True)
+    try:
+        book_id = parsed.get('book_id')
+
+        cursor.execute(''' 
+            SELECT *
+            FROM `ordered_book` WHERE `book_id`=%s;
+        ''', [book_id])
+
+        book = cursor.fetchone()
+
+        order_id = book['order_id']
+
+        cursor.execute('''
+            INSERT INTO `borrow_record`(`collection_date`,`delivered_by`,`order_id`)
+            VALUES(CURRENT_DATE(),%s,%s)
+        
+        ''', [librarian_id, order_id])
+
+        DB.get_connection().commit()
+
+        cursor.execute('''SELECT LAST_INSERT_ID()''')
+        result = cursor.fetchone()
+        borrow_id = result['LAST_INSERT_ID()']
+
+        cursor.execute('''
+            INSERT INTO `borrowed_book`(book_id, borrow_id) 
+            VALUES (%s,%s)
+        ''', [book_id, borrow_id])
+
+        cursor.execute('''
+            DELETE FROM `ordered_book`
+            WHERE order_id=%s
+        ''',[order_id])
+
+        DB.get_connection().commit()
+        cursor.close()
+
+        return {
+            "message": "successful"
+        }
+
+    except Exception as e:
+        print(e)
+        cursor.close()
+        return {
+            "message": "failure"
+        }
