@@ -272,14 +272,24 @@ def librarian_signup(request: HttpRequest):
 
 @api_view(["GET"])
 def librarian_get_all_ordered_books(request: HttpRequest):
-    data = get_all_ordered_books()
-    return Response(status=status.HTTP_200_OK, data=data)
+    try:
+        decoded = decodeJWT(request=request)
+        assert decoded.get('librarian_id') is not None
+
+        data = get_all_ordered_books()
+        return Response(status=status.HTTP_200_OK, data=data)
+
+    except Exception as e:
+        print(e)
+        return Response(status=status.HTTP_401_UNAUTHORIZED, data={"error": "token invalid"})
 
 
 @api_view(["POST"])
 def librarian_deliver_book(request: HttpRequest):
     try:
         decoded = decodeJWT(request=request)
+        assert decoded.get('librarian_id') is not None
+
         parsed = json.loads(request.body)
         data = librarian_deliver_book_handle_db(parsed, decoded['librarian_id'])
         return Response(status=status.HTTP_200_OK,data=data)
@@ -287,6 +297,38 @@ def librarian_deliver_book(request: HttpRequest):
     except Exception as e:
         print(e)
         return Response(status=status.HTTP_401_UNAUTHORIZED, data={"error": "token invalid"})
+
+
+@api_view(["GET"])
+def librarian_get_all_borrowed_books(request: HttpRequest):
+
+    try:
+        decoded = decodeJWT(request=request)
+        assert decoded.get('librarian_id') is not None
+
+        data = get_all_borrowed_books()
+        return Response(status=status.HTTP_200_OK, data=data)
+
+    except Exception as e:
+        print(e)
+        return Response(status=status.HTTP_401_UNAUTHORIZED, data={"error": "token invalid"})
+
+
+@api_view(["POST"])
+def librarian_receive_book(request: HttpRequest):
+    try:
+        decoded = decodeJWT(request=request)
+        assert decoded.get('librarian_id') is not None
+
+        parsed = json.loads(request.body)
+        data = librarian_receive_book_handle_db(parsed, decoded['librarian_id'])
+        return Response(status=status.HTTP_200_OK,data=data)
+
+    except Exception as e:
+        print(e)
+        return Response(status=status.HTTP_401_UNAUTHORIZED, data={"error": "token invalid"})
+
+
 
 
 @api_view(['GET'])

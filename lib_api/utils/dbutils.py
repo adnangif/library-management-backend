@@ -1,4 +1,8 @@
 from typing import Any, Dict
+
+import django.db
+import mysql.connector
+
 from .database import *
 
 from django.contrib.auth.hashers import PBKDF2PasswordHasher
@@ -509,10 +513,100 @@ def librarian_deliver_book_handle_db(parsed, librarian_id):
         cursor.execute('''
             DELETE FROM `ordered_book`
             WHERE order_id=%s
-        ''',[order_id])
+        ''', [order_id])
 
         DB.get_connection().commit()
         cursor.close()
+
+        return {
+            "message": "successful"
+        }
+
+    except Exception as e:
+        print(e)
+        cursor.close()
+        return {
+            "message": "failure"
+        }
+
+
+def get_all_borrowed_books():
+    cursor = DB.get_connection().cursor(dictionary=True)
+    try:
+        cursor.execute('''
+        SELECT `book_id`,`book_info`.*
+        FROM (`borrowed_book` NATURAL JOIN `book_copy`) NATURAL JOIN book_info
+        ''')
+
+        result = cursor.fetchall()
+
+        cursor.close()
+
+        print(result)
+
+        return result
+
+    except Exception as e:
+        print(e)
+        cursor.close()
+        return None
+
+
+def librarian_receive_book_handle_db(parsed, librarian_id):
+    cursor = DB.get_connection().cursor()
+
+    try:
+        book_id = parsed.get('book_id')
+
+        cursor.execute(f''' 
+            SELECT borrow_id,order_id
+            FROM `borrowed_book` NATURAL JOIN `borrow_record`
+            WHERE `book_id`=%s;
+        ''', [book_id])
+
+        book = cursor.fetchone()
+
+
+        borrow_id = book[0]
+        order_id = book[1]
+
+        print(book)
+
+        cursor.execute('''
+        SELECT MAX(return_id) FROM `return_record`
+        LIMIT 1
+        ''')
+        return_id = cursor.fetchone()[0] + 1
+
+
+        cursor.execute(f'''
+            INSERT INTO `return_record`(return_id,book_return_date, order_id, return_to)
+            VALUES(%s,CURRENT_DATE(),%s,%s)
+
+        ''',[return_id,order_id,librarian_id])
+
+        cursor.execute('''
+            INSERT INTO `returned_book`(book_id, return_id) 
+            VALUES (%s,%s);
+
+       
+        ''', [book_id, return_id])
+
+        cursor.execute('''
+        DELETE FROM `borrowed_book`
+        where borrow_id=%s;
+        ''',[borrow_id])
+
+        cursor.execute('''
+        UPDATE `book_copy`
+        SET `is_available` = 1
+        WHERE `book_id`=%s;
+        
+        ''',[book_id])
+
+        cursor.close()
+        DB.get_connection().commit()
+
 
         return {
             "message": "successful"
