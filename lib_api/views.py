@@ -233,11 +233,43 @@ def order_related_books(request:HttpRequest):
         return Response(status=status.HTTP_401_UNAUTHORIZED,data={"error":"token invalid"})
 
 
+@api_view(['POST'])
+def librarian_login(request: HttpRequest):
+    parsed = json.loads(request.body)
+    result = validate_librarian_iid_password(parsed)
+
+    if (result is not None and type(result) is dict):
+        encoded_jwt = createJWT(result)
+
+        return Response(status=status.HTTP_202_ACCEPTED, data={
+            'token': encoded_jwt,
+        })
+    else:
+        return Response(status=status.HTTP_400_BAD_REQUEST, data={'error': "BAD REQUEST"})
+
+
+@api_view(["GET"])
+def librarian_info(request: HttpRequest):
+    try:
+        decoded = decodeJWT(request=request)
+        return Response(status=status.HTTP_200_OK, data=decoded)
+
+    except Exception as e:
+        print(e)
+        return Response(status=status.HTTP_401_UNAUTHORIZED, data={"error": "token invalid"})
 
 
 @api_view(['POST'])
-def librarian_login(request:HttpRequest):
-    pass
+def librarian_signup(request: HttpRequest):
+    parsed = json.loads(request.body)
+    print(parsed)
+    result = create_librarian(parsed=parsed)
+
+    if(result):
+        return Response(status=status.HTTP_201_CREATED)
+    else:
+        return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
+
 
 @api_view(['GET'])
 def waiting_list(request:HttpRequest):
