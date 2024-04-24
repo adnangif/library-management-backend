@@ -329,6 +329,20 @@ def librarian_receive_book(request: HttpRequest):
         return Response(status=status.HTTP_401_UNAUTHORIZED, data={"error": "token invalid"})
 
 
+@api_view(['GET'])
+def borrowed_books_by_user(request:HttpRequest):
+    try:
+        decoded = decodeJWT(request=request)
+        user_id = decoded.get('user_id')
+        assert user_id is not None
+
+        data = get_user_borrowed_books(user_id=user_id)
+        return Response(status=status.HTTP_200_OK, data=data)
+
+    except Exception as e:
+        print(e)
+        return Response(status=status.HTTP_401_UNAUTHORIZED, data={"error": "token invalid"})
+
 
 
 @api_view(['GET'])

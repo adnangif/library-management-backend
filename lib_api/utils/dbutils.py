@@ -618,3 +618,27 @@ def librarian_receive_book_handle_db(parsed, librarian_id):
         return {
             "message": "failure"
         }
+
+
+
+def get_user_borrowed_books(user_id:str):
+    cursor = DB.get_connection().cursor(dictionary=True)
+    try:
+        cursor.execute('''
+        SELECT `book_copy`.book_id, `book_info`.*
+        FROM (((`borrowed_book` NATURAL JOIN `borrow_record`) NATURAL JOIN `order`) NATURAL JOIN `book_copy`) NATURAL JOIN `book_info`
+        WHERE `user_id` = %s
+        ''',[user_id])
+
+        result = cursor.fetchall()
+
+        cursor.close()
+
+        print(result)
+
+        return result
+
+    except Exception as e:
+        print(e)
+        cursor.close()
+        return None

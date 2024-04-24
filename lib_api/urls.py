@@ -18,6 +18,7 @@ urlpatterns = [
     path('order-details/',views.order_details),
     path('book-details/',views.book_details),
     path('ordered-books/',views.order_related_books),
+    path('borrowed-books/',views.borrowed_books_by_user),
 
     path('librarian/login/',views.librarian_login),
     path('librarian/signup/',views.librarian_signup),
