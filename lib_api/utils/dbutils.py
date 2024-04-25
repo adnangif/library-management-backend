@@ -480,7 +480,7 @@ def create_librarian(parsed: dict) -> bool:
 
 
 def librarian_deliver_book_handle_db(parsed, librarian_id):
-    cursor = DB.get_connection().cursor(dictionary=True)
+    cursor = DB.get_connection().cursor(dictionary=True,buffered=True)
     try:
         book_id = parsed.get('book_id')
 
