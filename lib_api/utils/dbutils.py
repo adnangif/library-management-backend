@@ -553,7 +553,7 @@ def get_all_borrowed_books():
 
 
 def librarian_receive_book_handle_db(parsed, librarian_id):
-    cursor = DB.get_connection().cursor()
+    cursor = DB.get_connection().cursor(dictionary=True,buffered=True)
 
     try:
         book_id = parsed.get('book_id')
@@ -567,25 +567,26 @@ def librarian_receive_book_handle_db(parsed, librarian_id):
         book = cursor.fetchone()
 
 
-        borrow_id = book[0]
-        order_id = book[1]
+        borrow_id = book["borrow_id"]
+        order_id = book["order_id"]
 
         print(book)
 
-        cursor.execute('''
-        SELECT MAX(return_id) FROM `return_record`
-        LIMIT 1
-        ''')
-        return_id = 1
-        if(cursor.fetchone()[0]):
-            return_id = cursor.fetchone()[0] + 1
+
 
 
         cursor.execute(f'''
-            INSERT INTO `return_record`(return_id,book_return_date, order_id, return_to)
-            VALUES(%s,CURRENT_DATE(),%s,%s)
+            INSERT INTO `return_record`(book_return_date, order_id, return_to)
+            VALUES(CURRENT_DATE(),%s,%s)
 
-        ''',[return_id,order_id,librarian_id])
+        ''',[order_id,librarian_id])
+
+
+        DB.get_connection().commit()
+
+        cursor.execute('''SELECT LAST_INSERT_ID()''')
+        result = cursor.fetchone()
+        return_id = result['LAST_INSERT_ID()']
 
         cursor.execute('''
             INSERT INTO `returned_book`(book_id, return_id) 
