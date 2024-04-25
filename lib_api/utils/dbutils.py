@@ -512,8 +512,8 @@ def librarian_deliver_book_handle_db(parsed, librarian_id):
 
         cursor.execute('''
             DELETE FROM `ordered_book`
-            WHERE order_id=%s
-        ''', [order_id])
+            WHERE `book_id`=%s
+        ''', [book_id])
 
         DB.get_connection().commit()
         cursor.close()
@@ -542,7 +542,6 @@ def get_all_borrowed_books():
 
         cursor.close()
 
-        print(result)
 
         return result
 
@@ -570,7 +569,6 @@ def librarian_receive_book_handle_db(parsed, librarian_id):
         borrow_id = book["borrow_id"]
         order_id = book["order_id"]
 
-        print(book)
 
 
 
@@ -625,7 +623,7 @@ def librarian_receive_book_handle_db(parsed, librarian_id):
 
 
 def get_user_borrowed_books(user_id:str):
-    cursor = DB.get_connection().cursor(dictionary=True)
+    cursor = DB.get_connection().cursor(dictionary=True,buffered=True)
     try:
         cursor.execute('''
         SELECT `book_copy`.book_id, `book_info`.*
@@ -637,7 +635,6 @@ def get_user_borrowed_books(user_id:str):
 
         cursor.close()
 
-        print(result)
 
         return result
 
