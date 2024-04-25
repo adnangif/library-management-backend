@@ -576,7 +576,9 @@ def librarian_receive_book_handle_db(parsed, librarian_id):
         SELECT MAX(return_id) FROM `return_record`
         LIMIT 1
         ''')
-        return_id = cursor.fetchone()[0] + 1
+        return_id = 1
+        if(cursor.fetchone()[0]):
+            return_id = cursor.fetchone()[0] + 1
 
 
         cursor.execute(f'''
